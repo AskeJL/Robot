@@ -10,6 +10,7 @@ B = højre motor inverted
 
 *************************************************************/
 boolean start = true;
+int speedVariable;
 void left(){
 
   digitalWrite(9, HIGH);   //Engage the Brake for Channel A - venstre
@@ -17,13 +18,13 @@ void left(){
   //Motor B - højre forward @ hald speed
   digitalWrite(13, LOW); //Establishes forward direction of Channel B - højre
   digitalWrite(8, LOW);   //Disengage the Brake for Channel B - højre
-  analogWrite(11, 125);   //Spins the motor on Channel B - højre at full speed
+  analogWrite(11, speedVariable);   //Spins the motor on Channel B - højre at full speed
 }
 void right(){
    //Motor A - venstre forward @ half speed
   digitalWrite(12, HIGH);  //Establishes forward direction of Channel A - venstre
   digitalWrite(9, LOW);   //Disengage the Brake for Channel A - venstre
-  analogWrite(3, 125);    //Spins the motor on Channel A - venstre at half speed
+  analogWrite(3, speedVariable);    //Spins the motor on Channel A - venstre at half speed
   
   //Motor B forward @ full speed
   digitalWrite(8, HIGH);   //Engage the Brake for Channel B - højre
@@ -53,29 +54,29 @@ void forward(){
    //Motor A - venstre forward @ full speed
   digitalWrite(12, HIGH);  //Establishes forward direction of Channel A - venstre
   digitalWrite(9, LOW);   //Disengage the Brake for Channel A - venstre
-  analogWrite(3, 255);    //Spins the motor on Channel A - venstre at half speed
+  analogWrite(3, speedVariable);    //Spins the motor on Channel A - venstre at half speed
   
   //Motor B - højre forward @ full speed
   digitalWrite(13, LOW); //Establishes forward direction of Channel B - højre
   digitalWrite(8, LOW);   //Disengage the Brake for Channel B - højre
-  analogWrite(11, 255);   //Spins the motor on Channel B - højre at full speed
+  analogWrite(11, speedVariable);   //Spins the motor on Channel B - højre at full speed
 }
 
 void backwards(){
   //Motor A - venstre backward @ full speed
   digitalWrite(12, LOW);  //Establishes backward direction of Channel A - venstre
   digitalWrite(9, LOW);   //Disengage the Brake for Channel A - venstre
-  analogWrite(3, 255);    //Spins the motor on Channel A - venstre at half speed
+  analogWrite(3, speedVariable);    //Spins the motor on Channel A - venstre at half speed
   
   //Motor B - højre backward @ full speed
   digitalWrite(13, HIGH); //Establishes backward direction of Channel B - højre
   digitalWrite(8, LOW);   //Disengage the Brake for Channel B - højre
-  analogWrite(11, 255);   //Spins the motor on Channel B - højre at full speed
+  analogWrite(11, speedVariable);   //Spins the motor on Channel B - højre at full speed
 }
 
 void stopMotor(){
-  digitalWrite(9, HIGH);   //Disengage the Brake for Channel A - venstre
-  digitalWrite(8, HIGH);   //Disengage the Brake for Channel B - højre
+  digitalWrite(9, HIGH);   //Engage the Brake for Channel A - venstre
+  digitalWrite(8, HIGH);   //Engage the Brake for Channel B - højre
   start = false;
 }
 #include <RPLidar.h>
@@ -98,8 +99,8 @@ void setup() {
   pinMode(9, OUTPUT); //Initiates Brake Channel A pin
 
   //Setup Channel B
-  pinMode(13, OUTPUT); //Initiates Motor Channel A pin
-  pinMode(8, OUTPUT);  //Initiates Brake Channel A pin
+  pinMode(13, OUTPUT); //Initiates Motor Channel B pin
+  pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
 
 
   lidar.begin(Serial);
@@ -111,7 +112,7 @@ void setup() {
 }
 
 void loop(){
-  
+  speedVariable = analogRead(A0);
   if (IS_OK(lidar.waitPoint())) {
     //perform data processing here... 
     float distance = lidar.getCurrentPoint().distance;
@@ -128,11 +129,11 @@ void loop(){
         delay(1000);
       }else{
         if(leftreadings<rightreadings){
-          hardright();
-          delay(1500);
+          right();
+          delay(1000);
         }else if(rightreadings<leftreadings){
-          hardleft();
-          delay(1500);
+          left();
+          delay(1000);
         }else{
           stopMotor();
         }
