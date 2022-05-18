@@ -112,7 +112,7 @@ void setup() {
 }
 
 void loop(){
-  speedVariable = analogRead(A0);
+  speedVariable = (((analogRead(A0)/2)/10));
   if (IS_OK(lidar.waitPoint())) {
     //perform data processing here... 
     float distance = lidar.getCurrentPoint().distance;
