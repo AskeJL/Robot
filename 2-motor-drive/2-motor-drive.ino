@@ -112,7 +112,8 @@ void setup() {
 }
 
 void loop(){
-  speedVariable = (((analogRead(A0)/2)/10));
+  //speedVariable = (((analogRead(A0)/2)/10));
+  speedVariable = 175;
   if (IS_OK(lidar.waitPoint())) {
     //perform data processing here... 
     float distance = lidar.getCurrentPoint().distance;
@@ -121,9 +122,12 @@ void loop(){
     int rounded = round(angle);
     int roundedDistance = round(distance);
     if (lidar.getCurrentPoint().startBit) {
-      int forwardreadings = forwarddistancereadings / forwardanglereadings;
-      int leftreadings = leftdistancereadings / leftanglereadings;
-      int rightreadings = rightdistancereadings / rightanglereadings;
+      int forwardreadings;
+      int leftreadings;
+      int rightreadings;
+      forwardreadings = forwarddistancereadings / forwardanglereadings;
+      leftreadings = leftdistancereadings / leftanglereadings;
+      rightreadings = rightdistancereadings / rightanglereadings;
       if (forwardreadings > 300){
         forward();
         delay(1000);
@@ -134,8 +138,10 @@ void loop(){
         }else if(rightreadings<leftreadings){
           left();
           delay(1000);
-        }else{
-          stopMotor();
+        }else if((leftreadings && rightreadings)< 200){
+          backwards();
+        } else{
+          right();
         }
       }
       forwardanglereadings = 0;
