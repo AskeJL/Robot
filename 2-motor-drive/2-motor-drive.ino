@@ -94,7 +94,6 @@ int leftdistancereadings = 0;
 int rightdistancereadings = 0;
 
 void LIDAR_GO(){
-  speedVariable = 175;
   if (IS_OK(lidar.waitPoint())) {
     //perform data processing here... 
     float distance = lidar.getCurrentPoint().distance;
