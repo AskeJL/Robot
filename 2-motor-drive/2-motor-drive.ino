@@ -92,27 +92,8 @@ int rightanglereadings = 0;
 int forwarddistancereadings = 0;
 int leftdistancereadings = 0;
 int rightdistancereadings = 0;
-void setup() {
-  
-  //Setup Channel A
-  pinMode(12, OUTPUT); //Initiates Motor Channel A pin
-  pinMode(9, OUTPUT); //Initiates Brake Channel A pin
 
-  //Setup Channel B
-  pinMode(13, OUTPUT); //Initiates Motor Channel B pin
-  pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
-
-
-  lidar.begin(Serial);
-  lidar.startScan();
-  // set pin modes
-  pinMode(RPLIDAR_MOTOR, OUTPUT);
-  analogWrite(RPLIDAR_MOTOR, 255);
-  
-}
-
-void loop(){
-  //speedVariable = (((analogRead(A0)/2)/10));
+void LIDAR_GO(){
   speedVariable = 175;
   if (IS_OK(lidar.waitPoint())) {
     //perform data processing here... 
@@ -155,21 +136,13 @@ void loop(){
         if(((angle > 0 && angle < 45)|| (angle > 360-45 && angle < 360))){
           forwardanglereadings = forwardanglereadings +1;
           forwarddistancereadings = forwarddistancereadings + roundedDistance;
-//        }else if(((angle > 0 && angle < 45)|| (angle > 360-45 && angle < 360))){
-//          forwardanglereadings = forwardanglereadings +1;
-//          forwarddistancereadings = forwarddistancereadings + roundedDistance;
         }else if((angle > 45 && angle < 135) && (distance > 150 && distance < 300 )){
-          leftanglereadings = leftanglereadings +1;
-          leftdistancereadings = leftdistancereadings + leftdistancereadings;
-//        }else if((angle > 45 && angle < 135) && (distance > 300 && distance < 700 )){
-//          leftanglereadings = leftanglereadings +1;
-//          leftdistancereadings = leftdistancereadings + roundedDistance;    
-        }else if((angle > 225 && angle < 360-45) && (distance > 150 && distance < 300 )){
           rightanglereadings = rightanglereadings +1;
           rightdistancereadings = rightdistancereadings + roundedDistance;  
-//        }else if((angle > 225 && angle < 360-45) && (distance > 300 && distance < 700 )){
-//          rightanglereadings = rightanglereadings +1;
-//          rightdistancereadings = rightdistancereadings + roundedDistance;   
+        }else if((angle > 225 && angle < 360-45) && (distance > 150 && distance < 300 )){
+          leftanglereadings = leftanglereadings +1;
+          leftdistancereadings = leftdistancereadings + roundedDistance;  
+  
         }
       }
     }
@@ -184,4 +157,28 @@ void loop(){
        analogWrite(RPLIDAR_MOTOR, 255);
        delay(1000);
     }
-  }}
+  }
+}
+void setup() {
+  
+  //Setup Channel A
+  pinMode(12, OUTPUT); //Initiates Motor Channel A pin
+  pinMode(9, OUTPUT); //Initiates Brake Channel A pin
+
+  //Setup Channel B
+  pinMode(13, OUTPUT); //Initiates Motor Channel B pin
+  pinMode(8, OUTPUT);  //Initiates Brake Channel B pin
+
+
+  lidar.begin(Serial);
+  lidar.startScan();
+  // set pin modes
+  pinMode(RPLIDAR_MOTOR, OUTPUT);
+  analogWrite(RPLIDAR_MOTOR, 255);
+  
+}
+
+void loop(){
+  speedVariable = (((analogRead(A0)/2)/10));
+  LIDAR_GO();
+  }
